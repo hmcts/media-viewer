@@ -9,6 +9,8 @@
     "@hmcts/frontend",
     "govuk-frontend",
     "pdfjs-dist",
-    "uuid"
+    "uuid",
+    "@ngx-translate/core",
+    "@ngx-translate/http-loader"
   ]
 }

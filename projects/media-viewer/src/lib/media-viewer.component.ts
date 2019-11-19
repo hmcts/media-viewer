@@ -18,6 +18,7 @@ import { AnnotationSet } from './annotations/annotation-set/annotation-set.model
 import { ToolbarEventService } from './toolbar/toolbar-event.service';
 import { AnnotationApiService } from './annotations/annotation-api.service';
 import { ResponseType, ViewerException } from './viewers/error-message/viewer-exception.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'mv-media-viewer',
@@ -42,17 +43,22 @@ export class MediaViewerComponent implements OnChanges, AfterContentInit {
   @Input() enableAnnotations = false;
   @Input() showCommentSummary: Subject<boolean>;
   @Input() annotationApiUrl;
+  @Input() language;
 
   annotationSet: Observable<AnnotationSet>;
 
   constructor(
     public readonly toolbarButtons: ToolbarButtonVisibilityService,
     public readonly toolbarEvents: ToolbarEventService,
-    private readonly api: AnnotationApiService
+    private readonly api: AnnotationApiService,
+    private readonly translate: TranslateService
   ) {
     if (this.annotationApiUrl) {
       api.annotationApiUrl = this.annotationApiUrl;
     }
+    translate.addLangs(Object.values(Languages));
+    translate.setDefaultLang(this.language);
+    translate.use(this.language);
   }
 
   ngAfterContentInit() {
@@ -65,7 +71,7 @@ export class MediaViewerComponent implements OnChanges, AfterContentInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(changes.annotationApiUrl) {
+    if (changes.annotationApiUrl) {
       this.api.annotationApiUrl = this.annotationApiUrl;
     }
     if (changes.url) {
@@ -76,6 +82,9 @@ export class MediaViewerComponent implements OnChanges, AfterContentInit {
     }
     if (changes.enableAnnotations && this.enableAnnotations) {
       this.annotationSet = this.api.getOrCreateAnnotationSet(this.url);
+    }
+    if (changes.language) {
+      this.setLanguage(changes.language.currentValue);
     }
     this.setToolbarButtons();
   }
@@ -103,6 +112,14 @@ export class MediaViewerComponent implements OnChanges, AfterContentInit {
     }
   }
 
+  setLanguage(language: string) {
+    if (!this.translate.getLangs().includes(language)) {
+      throw new Error('Language not available - choose from list of available languages');
+    }
+    this.language = language;
+    this.translate.use(language);
+  }
+
   onLoadException(exception: ViewerException) {
     this.viewerException.emit(exception);
   }
@@ -111,4 +128,9 @@ export class MediaViewerComponent implements OnChanges, AfterContentInit {
 enum SupportedContentTypes {
   PDF = 'pdf',
   IMAGE = 'image'
+}
+
+enum Languages {
+  ENGLISH = 'en',
+  WELSH = 'cy'
 }

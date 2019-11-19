@@ -50,6 +50,13 @@
         </details>
       </div>
     </div>
+
+    <div class="govuk-grid-row">
+        <button class="govuk-button" data-module="govuk-button" type="submit" (click)="setLanguage()">
+          Toggle Language
+        </button>
+    </div>
+
     <div class="govuk-grid-row">
       <div *ngIf="mediaLoadStatus && mediaLoadStatus ==='SUCCESS'" class="govuk-panel--confirmation">
         <div class="govuk-panel__body">
@@ -96,6 +103,7 @@
                    [enableAnnotations]="enableAnnotations"
                    [showToolbar]="showToolbar"
                    [toolbarButtonOverrides]="toolbarButtonOverrides"
+                   [language]="language"
                    (mediaLoadStatus)="onMediaLoad($event)"
                    (toolbarEventsOutput)="getToolbarFunctions($event)"></mv-media-viewer>
 </div>

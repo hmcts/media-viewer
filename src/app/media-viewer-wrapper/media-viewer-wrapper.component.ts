@@ -19,6 +19,9 @@ export class MediaViewerWrapperComponent implements AfterContentInit {
   url;
   comments: Observable<Comment[]>;
 
+  language: string;
+  private readonly languages = ['en', 'cy'];
+
   mediaLoadStatus: string;
 
   showToolbar = true;
@@ -30,6 +33,7 @@ export class MediaViewerWrapperComponent implements AfterContentInit {
 
   ngAfterContentInit() {
     this.setDocumentType(this.documentType);
+    this.language = 'en';
   }
 
   setDocumentType(newTab: string) {
@@ -43,6 +47,10 @@ export class MediaViewerWrapperComponent implements AfterContentInit {
       this.url = this.unsupportedUrl;
     }
     this.setDocumentUrl(this.url);
+  }
+
+  setLanguage() {
+    this.language = this.languages[(this.languages.indexOf(this.language) + 1) % this.languages.length];
   }
 
   toggleToolbar(showToolbar: boolean) {
