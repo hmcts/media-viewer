@@ -1,6 +1,33 @@
 {
   "demo": {
-    "unsupported": "Welsh welsh welsh welsh welsh. ",
-    "click": "click welshy stuff to download"
+    "select": "Dewis Iaith",
+    "unsupported": "Nid yw'r gwyliwr yn cefnogi'r math hwn o ffeil. Os gwelwch yn dda ",
+    "click": "cliciwch yma i lawrlwytho"
+  },
+  "toolbar": {
+    "sidebar": "Toggle Bar Ochr",
+    "findDoc": "Darganfyddwch yn y Ddogfen",
+    "previous": "Tudalen Blaenorol",
+    "next": "Tudalen nesaf",
+    "page": "Rhif Tudalen",
+    "highlight": "Modd Testun Tynnu sylw",
+    "draw": "Modd Tynnu",
+    "presentation": "Newid i'r Modd Cyflwyno",
+    "open": "Ffeil Agored",
+    "download": "Dadlwythwch",
+    "print": "Argraffu",
+    "currentView": "Golygfa gyfredol (copi neu agor yn y ffenestr newydd)",
+    "tools": "Offer",
+
+    "rotateCCW": "Cylchdroi yn wrthglocwedd",
+    "rotateCW": "Cylchdroi yn glocwedd",
+
+    "zoom": "Chwyddo",
+    "zoomOut": "Chwyddo allan",
+    "zoomIn": "Chwyddo Mewn",
+
+    "findText": "Dewch o hyd i",
+    "findPrev": "Darganfyddwch ddigwyddiad blaenorol yr ymadrodd",
+    "findNext": "Darganfyddwch ddigwyddiad nesaf yr ymadrodd"
   }
 }

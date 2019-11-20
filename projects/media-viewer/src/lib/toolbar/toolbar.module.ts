@@ -12,6 +12,7 @@ import { ToolbarButtonVisibilityService } from './toolbar-button-visibility.serv
 import { ToolbarEventService } from './toolbar-event.service';
 import { OutlineViewComponent } from './side-bar/outline-view/outline-view.component';
 import { OutlineItemComponent } from './side-bar/outline-view/outline-item/outline-item.component';
+import {TranslateModule} from '@ngx-translate/core';
 
 export { ToolbarButtonVisibilityService } from './toolbar-button-visibility.service';
 export { ToolbarEventService } from './toolbar-event.service';
@@ -42,7 +43,8 @@ export { ToolbarEventService } from './toolbar-event.service';
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ]
 })
 export class ToolbarModule { }

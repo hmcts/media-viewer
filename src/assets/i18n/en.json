@@ -1,6 +1,33 @@
 {
   "demo": {
+    "select": "Select Language",
     "unsupported": "This file type is not supported by this viewer. Please ",
     "click": "click here to download"
+  },
+  "toolbar": {
+    "sidebar": "Toggle Sidebar",
+    "findDoc": "Find in Document",
+    "previous": "Previous Page",
+    "next": "Next Page",
+    "page": "Page Number",
+    "highlight": "Highlight Text Mode",
+    "draw": "Draw Mode",
+    "presentation": "Switch to Presentation Mode",
+    "open": "Open File",
+    "download": "Download",
+    "print": "Print",
+    "currentView": "Current view (copy or open in new window)",
+    "tools": "Tools",
+
+    "rotateCCW": "Rotate Counterclockwise",
+    "rotateCW": "Rotate Clockwise",
+
+    "zoom": "Zoom",
+    "zoomOut": "Zoom Out",
+    "zoomIn": "Zoom In",
+
+    "findText": "Find",
+    "findPrev": "Find the previous occurrence of the phrase",
+    "findNext": "Find the next occurrence of the phrase"
   }
 }
