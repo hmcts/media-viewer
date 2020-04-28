@@ -17,6 +17,7 @@ import { TagInputModule } from 'ngx-chips';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule} from '@ngrx/store';
+import {IcpWebsocketService} from './providers/icp-websocket-service';
 // APP store
 import { reducers} from './store';
 import { effects } from './store/effects/index';
@@ -54,6 +55,7 @@ import { BookmarksComponent } from './viewers/pdf-viewer/side-bar/bookmarks/book
   providers: [
     PdfJsWrapperFactory,
     CommentService,
+    IcpWebsocketService
   ],
   exports: [
     MediaViewerComponent

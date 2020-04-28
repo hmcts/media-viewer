@@ -25,9 +25,11 @@ import { CommentSetComponent } from '../../annotations/comment-set/comment-set.c
 import { Outline } from './side-bar/outline-item/outline.model';
 import {Store} from '@ngrx/store';
 import * as fromStore from '../../store/reducers';
-import * as fromActions from '../../store/actions/annotations.action';
+import * as fromAnnotationActions from '../../store/actions/annotations.action';
+import * as fromIcpActions from '../../store/actions/icp.action';
 import { tap, throttleTime } from 'rxjs/operators';
 import * as fromTagActions from '../../store/actions/tags.actions';
+import {IcpSession} from '../../store/reducers';
 import { UpdatePdfPosition } from '../../store/actions/bookmarks.action';
 
 @Component({
@@ -71,7 +73,8 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   enableGrabNDrag = false;
 
   constructor(
-    private store: Store<fromStore.AnnotationSetState>,
+    private annotationSetStateStore: Store<fromStore.AnnotationSetState>,
+    private icpSessionStateStore: Store<fromStore.IcpSessionState>,
     private readonly pdfJsWrapperFactory: PdfJsWrapperFactory,
     private readonly viewContainerRef: ViewContainerRef,
     private readonly printService: PrintService,
@@ -80,7 +83,7 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
     public readonly toolbarButtons: ToolbarButtonVisibilityService,
   ) {
     this.highlightMode = toolbarEvents.highlightModeSubject.pipe(tap(() => {
-      this.store.dispatch(new fromTagActions.ClearFilterTags());
+      this.annotationSetStateStore.dispatch(new fromTagActions.ClearFilterTags());
     }));
     this.drawMode = toolbarEvents.drawModeSubject;
   }
@@ -99,7 +102,7 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
           scale: event.source.scale,
           rotation: event.source.rotation
         };
-        this.store.dispatch(new fromActions.AddPage(payload));
+        this.annotationSetStateStore.dispatch(new fromAnnotationActions.AddPage(payload));
       }
     });
     this.$subscription = this.toolbarEvents.printSubject.subscribe(() => this.printService.printDocumentNatively(this.url));
@@ -111,6 +114,7 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
     this.$subscription.add(this.toolbarEvents.setCurrentPageSubject.subscribe(pageNumber => this.pdfWrapper.setPageNumber(pageNumber)));
     this.$subscription.add(this.toolbarEvents.changePageByDeltaSubject.subscribe(pageNumber => this.pdfWrapper.changePageNumber(pageNumber)));
     this.$subscription.add(this.toolbarEvents.grabNDrag.subscribe(grabNDrag => this.enableGrabNDrag = grabNDrag));
+    this.$subscription.add(this.toolbarEvents.icpSession.subscribe(() => this.createIcpSession()));
     this.$subscription.add(this.viewerEvents.commentsPanelVisible.subscribe(toggle => this.showCommentsPanel = toggle));
     this.$subscription.add(
       this.pdfWrapper.positionUpdated.asObservable().pipe(throttleTime(1000))
@@ -177,7 +181,7 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   }
 
   onPdfViewerClick() {
-    this.store.dispatch(new fromActions.SelectedAnnotation({annotationId: '', selected: false, editable: false}));
+    this.annotationSetStateStore.dispatch(new fromAnnotationActions.SelectedAnnotation({annotationId: '', selected: false, editable: false}));
     this.viewerEvents.clearCtxToolbar();
   }
 
@@ -244,5 +248,16 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
     if (newZoomValue > 5) { return 5; }
     if (newZoomValue < 0.1) { return 0.1; }
     return newZoomValue;
+  }
+
+  createIcpSession() {
+    const newIcpSession: IcpSession = {
+      id: null,
+      description: null,
+      dateOfHearing: new Date(),
+      documents: [],
+      participants: []
+    }
+    this.icpSessionStateStore.dispatch(new fromIcpActions.CreateIcpSession(newIcpSession));
   }
 }

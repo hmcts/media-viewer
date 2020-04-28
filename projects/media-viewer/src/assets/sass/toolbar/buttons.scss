@@ -365,6 +365,11 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
   content: url(/assets/images/toolbarButton-download.png);
 }
 
+.toolbarButton.icpCreateSession::before,
+.secondaryToolbarButton.icpCreateSession::before {
+  content: url(/assets/images/treeitem-collapsed@2x.png);
+}
+
 .secondaryToolbarButton.grabNDrag::before {
   content: url(/assets/images/secondaryToolbarButton-handGrab.png);
 }

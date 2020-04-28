@@ -33,6 +33,10 @@ export class SubToolbarComponent {
     this.closeMenu();
   }
 
+  createIcpSession() {
+    this.toolbarEvents.createIcpSession();
+  }
+
   rotateCcw() {
     this.toolbarEvents.rotate(270);
     this.closeMenu();
