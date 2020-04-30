@@ -34,7 +34,11 @@ export class SubToolbarComponent {
   }
 
   createIcpSession() {
-    this.toolbarEvents.createIcpSession();
+    this.toolbarEvents.startIcpSession();
+  }
+
+  loadIcpSession(id: string) {
+    this.toolbarEvents.getIcpSession(id);
   }
 
   rotateCcw() {

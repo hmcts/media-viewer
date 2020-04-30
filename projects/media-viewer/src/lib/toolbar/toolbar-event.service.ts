@@ -37,7 +37,8 @@ export class ToolbarEventService {
   public readonly sidebarOpen = new BehaviorSubject(false);
   public readonly subToolbarHidden = new BehaviorSubject(true);
   public readonly searchBarHidden = new BehaviorSubject(true);
-  public readonly icpSession = new Subject();
+  public readonly createIcpSession = new Subject();
+  public readonly loadIcpSession = new Subject<string>();
 
   /**
    * Reset the stateful behaviour subjects
@@ -133,5 +134,11 @@ export class ToolbarEventService {
 
   public createIcpSession(): void {
     this.icpSession.next();
+  public startIcpSession(): void {
+    this.createIcpSession.next();
+  }
+
+  public getIcpSession(value: string): void {
+    this.loadIcpSession.next(value);
   }
 }

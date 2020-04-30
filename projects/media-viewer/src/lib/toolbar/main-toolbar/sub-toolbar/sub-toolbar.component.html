@@ -51,6 +51,8 @@
               data-l10n-id="create_icp_session" (click)="createIcpSession()">
         <span data-l10n-id="create_icp_session">Create Icp Session</span>
       </button>
+    <input #sessionId>
+    <button (click)="loadIcpSession(sessionId.value)"></button>
     <div class="horizontalToolbarSeparator"></div>
   </div>
 </div>

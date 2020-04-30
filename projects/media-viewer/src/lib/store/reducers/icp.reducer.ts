@@ -27,11 +27,21 @@ export function icpReducer (state = initialIcpSessionState,
       const session: IcpSession = action.payload;
       return {
         ...state,
-        session,
-        connected: true
+        session
+      }
+    }
+
+    case fromIcpActions.LOAD_ICP_SESSION_SUCCESS: {
+      const session: IcpSession = action.payload;
+      return {
+        ... state,
+        session
       }
     }
   }
 
   return state;
 }
+
+export const getIcpSession = (state: IcpSessionState) => state.session;
+
