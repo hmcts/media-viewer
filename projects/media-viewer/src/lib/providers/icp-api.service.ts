@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {IcpSession} from '../store/reducers/icp.reducer';
-import {map} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { IcpSession } from '../store/reducers/icp.reducer';
+import { map } from 'rxjs/operators';
 import {Observable} from 'rxjs';
 
 @Injectable()

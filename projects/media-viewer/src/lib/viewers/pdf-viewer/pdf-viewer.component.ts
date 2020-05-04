@@ -17,20 +17,21 @@ import { PdfJsWrapperFactory } from './pdf-js/pdf-js-wrapper.provider';
 import { AnnotationSet } from '../../annotations/annotation-set/annotation-set.model';
 import { ToolbarEventService } from '../../toolbar/toolbar-event.service';
 import { PrintService } from '../../print.service';
-import {BehaviorSubject, Observable, Subscription} from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { ViewerEventService } from '../viewer-event.service';
 import { ResponseType, ViewerException } from '../viewer-exception.model';
 import { ToolbarButtonVisibilityService } from '../../toolbar/toolbar-button-visibility.service';
 import { CommentSetComponent } from '../../annotations/comment-set/comment-set.component';
 import { Outline } from './side-bar/outline-item/outline.model';
-import {Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
+import { IcpSession, IcpSessionState, Screen } from '../../store/reducers';
 import * as fromStore from '../../store/reducers';
 import * as fromAnnotationActions from '../../store/actions/annotations.action';
 import * as fromIcpActions from '../../store/actions/icp.action';
 import { tap, throttleTime } from 'rxjs/operators';
 import * as fromTagActions from '../../store/actions/tags.actions';
-import {IcpSession} from '../../store/reducers';
 import { UpdatePdfPosition } from '../../store/actions/bookmarks.action';
+import * as fromSelectors from '../../store/selectors/icp.selectors';
 
 @Component({
   selector: 'mv-pdf-viewer',
@@ -69,6 +70,7 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   private pdfWrapper: PdfJsWrapper;
   private $subscription: Subscription;
   private viewerException: ViewerException;
+  private icpSessionState$: Observable<IcpSessionState>;
   showCommentsPanel: boolean;
   enableGrabNDrag = false;
 
@@ -116,11 +118,13 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
     this.$subscription.add(this.toolbarEvents.grabNDrag.subscribe(grabNDrag => this.enableGrabNDrag = grabNDrag));
     this.$subscription.add(this.toolbarEvents.createIcpSession.subscribe(() => this.createIcpSession()));
     this.$subscription.add(this.toolbarEvents.loadIcpSession.subscribe(id => this.loadIcpSession(id)));
+    this.$subscription.add(this.toolbarEvents.getCurrentPageNumber().subscribe(changes => this.onPageChange(changes)));
     this.$subscription.add(this.viewerEvents.commentsPanelVisible.subscribe(toggle => this.showCommentsPanel = toggle));
     this.$subscription.add(
       this.pdfWrapper.positionUpdated.asObservable().pipe(throttleTime(1000))
       .subscribe(event => this.store.dispatch(new UpdatePdfPosition(event.location)))
     );
+    this.icpSessionState$ = this.icpSessionStateStore.pipe(select(fromSelectors.getIcpSessionState));
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -263,6 +267,16 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   }
 
   loadIcpSession(id: string) {
-    this.icpSessionStateStore.dispatch(new fromIcpActions.LoadIcpSession(id));
+    this.icpSessionStateStore.dispatch(new fromIcpActions.LoadIcpSession(id)); // load session
+    this.icpSessionStateStore.dispatch(new fromIcpActions.IcpScreenUpdated(id)); // listen for updates
+  }
+
+  onPageChange(changes: number) {
+    this.icpSessionState$.subscribe(session => {
+      if (session.presenting) {
+        const screen: Screen = {page: changes, document: null};
+        this.icpSessionStateStore.dispatch(new fromIcpActions.UpdateIcpScreen({body: screen, id: session.session.id}));
+      }
+    });
   }
 }
