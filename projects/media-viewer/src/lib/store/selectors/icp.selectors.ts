@@ -1,14 +1,23 @@
-import {createSelector} from '@ngrx/store';
-
+import { createSelector } from '@ngrx/store';
 import * as fromFeature from '../reducers';
 import * as fromIcp from '../reducers/icp.reducer';
 
-export const getIcpSessionState = createSelector(
+export const getIcpState = createSelector(
   fromFeature.getMVState,
-  (state: fromFeature.State) =>  state.icpSession
+  (state: fromFeature.State) =>  state.icp
 );
 
 export const getIcpSession = createSelector(
-  getIcpSessionState,
+  getIcpState,
   fromIcp.getIcpSession
 );
+
+export const getIcpPresenting = createSelector(
+  getIcpState,
+  fromIcp.getIpcPresenting
+)
+
+export const getIcpScreenUpdate = createSelector(
+  getIcpState,
+  fromIcp.getIcpScreenUpdate
+)

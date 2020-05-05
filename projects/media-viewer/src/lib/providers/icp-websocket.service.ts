@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Screen } from '../store/reducers';
+import { IcpScreenUpdate } from '../store/reducers';
 import { StompServiceFactoryService } from './stomp-service-factory.service';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class IcpWebsocketService {
     this.stompServiceFactory.connect(sessionId);
   }
 
-  updateScreen(update: {body: Screen, id: string}) {
+  updateScreen(update: {body: IcpScreenUpdate, id: string}) {
     const sessionId = update.id;
     this.connectSession(sessionId);
     this.stompServiceFactory.publishUpdates(`${this.ICP_UPDATE_SCREEN}/${sessionId}`,

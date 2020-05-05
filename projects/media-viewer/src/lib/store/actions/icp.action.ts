@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { IcpSession, Screen } from '../reducers/icp.reducer';
+import { IcpSession, IcpScreenUpdate } from '../reducers/icp.reducer';
 
 export const CREATE_ICP_SESSION = '[Icp] Create Session';
 export const CREATE_ICP_SESSION_SUCCESS = '[Icp] Create Session Success';
@@ -45,7 +45,7 @@ export class LoadIcpSessionFailure implements Action {
 
 export class UpdateIcpScreen implements Action {
   readonly type = UPDATE_ICP_SCREEN;
-  constructor(public payload: { body: Screen, id: string }) {}
+  constructor(public payload: { body: IcpScreenUpdate, id: string }) {}
 }
 
 export class IcpScreenUpdated implements Action {
@@ -55,7 +55,7 @@ export class IcpScreenUpdated implements Action {
 
 export class IcpScreenUpdatedSuccess implements Action {
   readonly type = ICP_SCREEN_UPDATED_SUCCESS;
-  constructor(public payload: Screen) {}
+  constructor(public payload: IcpScreenUpdate) {}
 }
 
 export class IcpScreenUpdatedFailure implements Action {

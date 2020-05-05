@@ -18,7 +18,7 @@ export class SubToolbarComponent implements OnInit {
   constructor(
     public readonly toolbarButtons: ToolbarButtonVisibilityService,
     public readonly toolbarEvents: ToolbarEventService,
-    private store: Store<fromReducers.IcpSessionState>
+    private store: Store<fromReducers.IcpState>
   ) {}
 
   ngOnInit() {

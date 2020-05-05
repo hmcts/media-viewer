@@ -10,14 +10,14 @@ export interface State {
   annotations: fromAnnotation.AnnotationSetState;
   tags: fromTags.TagsState;
   bookmarks: BookmarksState;
-  icpSession: fromIcp.IcpSessionState;
+  icp: fromIcp.IcpState;
 }
 
 export const reducers: ActionReducerMap<State> = {
   annotations: fromAnnotation.reducer,
   tags: fromTags.tagsReducer,
   bookmarks: fromBookmarks.bookmarksReducer,
-  icpSession: fromIcp.icpReducer
+  icp: fromIcp.icpReducer
 };
 
 export const getMVState = createFeatureSelector<State>('media-viewer');

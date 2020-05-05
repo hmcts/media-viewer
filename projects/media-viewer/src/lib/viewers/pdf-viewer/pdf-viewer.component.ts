@@ -24,7 +24,7 @@ import { ToolbarButtonVisibilityService } from '../../toolbar/toolbar-button-vis
 import { CommentSetComponent } from '../../annotations/comment-set/comment-set.component';
 import { Outline } from './side-bar/outline-item/outline.model';
 import { select, Store } from '@ngrx/store';
-import { IcpSession, IcpSessionState, Screen } from '../../store/reducers';
+import { IcpSession, IcpScreenUpdate } from '../../store/reducers';
 import * as fromStore from '../../store/reducers';
 import * as fromAnnotationActions from '../../store/actions/annotations.action';
 import * as fromIcpActions from '../../store/actions/icp.action';
@@ -70,13 +70,14 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   private pdfWrapper: PdfJsWrapper;
   private $subscription: Subscription;
   private viewerException: ViewerException;
-  private icpSessionState$: Observable<IcpSessionState>;
+  private icpSession: IcpSession;
+  private icpPresenting: boolean;
   showCommentsPanel: boolean;
   enableGrabNDrag = false;
 
   constructor(
     private annotationSetStateStore: Store<fromStore.AnnotationSetState>,
-    private icpSessionStateStore: Store<fromStore.IcpSessionState>,
+    private icpStateStore: Store<fromStore.IcpState>,
     private readonly pdfJsWrapperFactory: PdfJsWrapperFactory,
     private readonly viewContainerRef: ViewContainerRef,
     private readonly printService: PrintService,
@@ -116,15 +117,23 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
     this.$subscription.add(this.toolbarEvents.setCurrentPageSubject.subscribe(pageNumber => this.pdfWrapper.setPageNumber(pageNumber)));
     this.$subscription.add(this.toolbarEvents.changePageByDeltaSubject.subscribe(pageNumber => this.pdfWrapper.changePageNumber(pageNumber)));
     this.$subscription.add(this.toolbarEvents.grabNDrag.subscribe(grabNDrag => this.enableGrabNDrag = grabNDrag));
+    this.$subscription.add(this.viewerEvents.commentsPanelVisible.subscribe(toggle => this.showCommentsPanel = toggle));
     this.$subscription.add(this.toolbarEvents.createIcpSession.subscribe(() => this.createIcpSession()));
     this.$subscription.add(this.toolbarEvents.loadIcpSession.subscribe(id => this.loadIcpSession(id)));
-    this.$subscription.add(this.toolbarEvents.getCurrentPageNumber().subscribe(changes => this.onPageChange(changes)));
     this.$subscription.add(this.viewerEvents.commentsPanelVisible.subscribe(toggle => this.showCommentsPanel = toggle));
     this.$subscription.add(
       this.pdfWrapper.positionUpdated.asObservable().pipe(throttleTime(1000))
       .subscribe(event => this.store.dispatch(new UpdatePdfPosition(event.location)))
     );
-    this.icpSessionState$ = this.icpSessionStateStore.pipe(select(fromSelectors.getIcpSessionState));
+    this.$subscription.add(this.toolbarEvents.getCurrentPageNumber().subscribe(changes => {
+      if (this.icpPresenting) { this.presentIcpScreenUpdate(changes); }
+    }));
+
+    this.icpStateStore.pipe(select(fromSelectors.getIcpSession)).subscribe(session => this.icpSession = session);
+    this.icpStateStore.pipe(select(fromSelectors.getIcpPresenting)).subscribe(presenting => this.icpPresenting = presenting);
+    this.icpStateStore.pipe(select(fromSelectors.getIcpScreenUpdate)).subscribe(screen => {
+      if (!this.icpPresenting && screen) { this.followIcpScreenUpdates(screen); }
+    });
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -256,27 +265,27 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   }
 
   createIcpSession() {
-    const newIcpSession: IcpSession = {
+    const newSession: IcpSession = {
       id: null,
       description: null,
       dateOfHearing: new Date(),
       documents: [],
       participants: []
     }
-    this.icpSessionStateStore.dispatch(new fromIcpActions.CreateIcpSession(newIcpSession));
+    this.icpStateStore.dispatch(new fromIcpActions.CreateIcpSession(newSession));
   }
 
   loadIcpSession(id: string) {
-    this.icpSessionStateStore.dispatch(new fromIcpActions.LoadIcpSession(id)); // load session
-    this.icpSessionStateStore.dispatch(new fromIcpActions.IcpScreenUpdated(id)); // listen for updates
+    this.icpStateStore.dispatch(new fromIcpActions.LoadIcpSession(id)); // load session
+    this.icpStateStore.dispatch(new fromIcpActions.IcpScreenUpdated(id)); // follow updates
   }
 
-  onPageChange(changes: number) {
-    this.icpSessionState$.subscribe(session => {
-      if (session.presenting) {
-        const screen: Screen = {page: changes, document: null};
-        this.icpSessionStateStore.dispatch(new fromIcpActions.UpdateIcpScreen({body: screen, id: session.session.id}));
-      }
-    });
+  presentIcpScreenUpdate(changes: number) {
+    const screenUpdate: IcpScreenUpdate = {page: changes, document: null};
+    this.icpStateStore.dispatch(new fromIcpActions.UpdateIcpScreen({body: screenUpdate, id: this.icpSession.id}));
+  }
+
+  followIcpScreenUpdates(screenUpdate: IcpScreenUpdate) {
+    this.pdfWrapper.setPageNumber(screenUpdate.page);
   }
 }

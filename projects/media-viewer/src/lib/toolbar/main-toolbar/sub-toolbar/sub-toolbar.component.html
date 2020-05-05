@@ -46,15 +46,15 @@
       <span data-l10n-id="download_label">Download</span>
       </button>
     <div class="horizontalToolbarSeparator"></div>
-    <div  *ngIf="!(icpSession$ | async) as icpSession; else loadSession">
+    <div  *ngIf="!(icpSession$ | async)">
       <button id="icpCreateSession"
-              class="secondaryToolbarButton icpCreateSession" title="IcpCreateSession"
+              class="secondaryToolbarButton" title="IcpCreateSession"
               data-l10n-id="create_icp_session" (click)="createIcpSession()">
         <span data-l10n-id="create_icp_session">Create Icp Session</span>
       </button>
-    <input #sessionId>
-    <button (click)="loadIcpSession(sessionId.value)"></button>
+    <input #sessionId (keyup)="loadIcpSession(sessionId.value)">
     </div>
+    <div *ngIf="(icpSession$ | async) as icpSession">{{icpSession.id}}</div>
     <div class="horizontalToolbarSeparator"></div>
   </div>
 </div>
