@@ -12,11 +12,6 @@ export const getIcpSession = createSelector(
   fromIcp.getIcpSession
 );
 
-export const getIcpPresenting = createSelector(
-  getIcpState,
-  fromIcp.getIpcPresenting
-)
-
 export const getIcpScreenUpdate = createSelector(
   getIcpState,
   fromIcp.getIcpScreenUpdate

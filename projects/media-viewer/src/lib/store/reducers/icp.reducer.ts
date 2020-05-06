@@ -3,7 +3,6 @@ import * as fromIcpActions from '../actions/icp.action';
 export interface IcpState {
   session: IcpSession;
   screenUpdate: IcpScreenUpdate;
-  presenting: boolean;
 }
 
 export interface IcpSession {
@@ -21,8 +20,7 @@ export interface IcpScreenUpdate {
 
 export const initialIcpSessionState: IcpState = {
   session: null,
-  screenUpdate: null,
-  presenting: false,
+  screenUpdate: null
 };
 
 export function icpReducer (state = initialIcpSessionState,
@@ -34,8 +32,7 @@ export function icpReducer (state = initialIcpSessionState,
       const session: IcpSession = action.payload;
       return {
         ...state,
-        session,
-        presenting: true
+        session
       }
     }
 
@@ -59,6 +56,5 @@ export function icpReducer (state = initialIcpSessionState,
 }
 
 export const getIcpSession = (state: IcpState) => state.session;
-export const getIpcPresenting = (state: IcpState) => state.presenting;
 export const getIcpScreenUpdate = (state: IcpState) => state.screenUpdate;
 

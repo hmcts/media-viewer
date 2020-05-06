@@ -71,9 +71,9 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   private $subscription: Subscription;
   private viewerException: ViewerException;
   private icpSession: IcpSession;
-  private icpPresenting: boolean;
   showCommentsPanel: boolean;
   enableGrabNDrag = false;
+  icpPresenting = false;
 
   constructor(
     private annotationSetStateStore: Store<fromStore.AnnotationSetState>,
@@ -130,7 +130,6 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
     }));
 
     this.icpStateStore.pipe(select(fromSelectors.getIcpSession)).subscribe(session => this.icpSession = session);
-    this.icpStateStore.pipe(select(fromSelectors.getIcpPresenting)).subscribe(presenting => this.icpPresenting = presenting);
     this.icpStateStore.pipe(select(fromSelectors.getIcpScreenUpdate)).subscribe(screen => {
       if (!this.icpPresenting && screen) { this.followIcpScreenUpdates(screen); }
     });
@@ -272,6 +271,7 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
       documents: [],
       participants: []
     }
+    this.icpPresenting = true;
     this.icpStateStore.dispatch(new fromIcpActions.CreateIcpSession(newSession));
   }
 
