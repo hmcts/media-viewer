@@ -132,8 +132,6 @@ export class ToolbarEventService {
     this.sidebarOpen.next(toggle);
   }
 
-  public createIcpSession(): void {
-    this.icpSession.next();
   public startIcpSession(): void {
     this.createIcpSession.next();
   }
