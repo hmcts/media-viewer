@@ -1,5 +1,4 @@
 import { createFeatureSelector, ActionReducerMap } from '@ngrx/store';
-
 import * as fromAnnotation from './annotatons.reducer';
 import * as fromTags from './tags.reducer';
 import * as fromBookmarks from './bookmarks.reducer';
@@ -25,4 +24,4 @@ export const getMVState = createFeatureSelector<State>('media-viewer');
 export * from './annotatons.reducer';
 export * from './tags.reducer';
 export * from './bookmarks.reducer';
-export * from './icp.reducer'
+export * from './icp.reducer';

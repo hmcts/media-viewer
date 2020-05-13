@@ -118,13 +118,12 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
     this.$subscription.add(this.toolbarEvents.changePageByDeltaSubject.subscribe(pageNumber => this.pdfWrapper.changePageNumber(pageNumber)));
     this.$subscription.add(this.toolbarEvents.grabNDrag.subscribe(grabNDrag => this.enableGrabNDrag = grabNDrag));
     this.$subscription.add(this.viewerEvents.commentsPanelVisible.subscribe(toggle => this.showCommentsPanel = toggle));
-    this.$subscription.add(this.toolbarEvents.createIcpSession.subscribe(() => this.createIcpSession()));
-    this.$subscription.add(this.toolbarEvents.loadIcpSession.subscribe(id => this.loadIcpSession(id)));
-    this.$subscription.add(this.viewerEvents.commentsPanelVisible.subscribe(toggle => this.showCommentsPanel = toggle));
     this.$subscription.add(
       this.pdfWrapper.positionUpdated.asObservable().pipe(throttleTime(1000))
-      .subscribe(event => this.store.dispatch(new UpdatePdfPosition(event.location)))
+      .subscribe(event => this.annotationSetStateStore.dispatch(new UpdatePdfPosition(event.location)))
     );
+    this.$subscription.add(this.toolbarEvents.createIcpSession.subscribe(() => this.createIcpSession()));
+    this.$subscription.add(this.toolbarEvents.loadIcpSession.subscribe(id => this.loadIcpSession(id)));
     this.$subscription.add(this.toolbarEvents.getCurrentPageNumber().subscribe(changes => {
       if (this.icpPresenting) { this.presentIcpScreenUpdate(changes); }
     }));
