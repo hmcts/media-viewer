@@ -31,7 +31,7 @@ import * as fromIcpActions from '../../store/actions/icp.action';
 import { tap, throttleTime } from 'rxjs/operators';
 import * as fromTagActions from '../../store/actions/tags.actions';
 import { UpdatePdfPosition } from '../../store/actions/bookmarks.action';
-import * as fromSelectors from '../../store/selectors/icp.selectors';
+import * as fromIcpSelectors from '../../store/selectors/icp.selectors';
 
 @Component({
   selector: 'mv-pdf-viewer',
@@ -128,8 +128,8 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
       if (this.icpPresenting) { this.presentIcpScreenUpdate(changes); }
     }));
 
-    this.icpStateStore.pipe(select(fromSelectors.getIcpSession)).subscribe(session => this.icpSession = session);
-    this.icpStateStore.pipe(select(fromSelectors.getIcpScreenUpdate)).subscribe(screen => {
+    this.icpStateStore.pipe(select(fromIcpSelectors.getIcpSession)).subscribe(session => this.icpSession = session);
+    this.icpStateStore.pipe(select(fromIcpSelectors.getIcpScreenUpdate)).subscribe(screen => {
       if (!this.icpPresenting && screen) { this.followIcpScreenUpdates(screen); }
     });
   }
@@ -269,7 +269,7 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
       dateOfHearing: new Date(),
       documents: [],
       participants: []
-    }
+    };
     this.icpPresenting = true;
     this.icpStateStore.dispatch(new fromIcpActions.CreateIcpSession(newSession));
   }
