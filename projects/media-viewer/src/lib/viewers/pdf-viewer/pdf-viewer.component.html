@@ -18,7 +18,8 @@
      #viewerContainer
      class="pdfContainer"
      [ngStyle]="{ height: height }"
-     [ngClass]="{ 'pdfContainer': true, 'annotations': enableAnnotations, hidden: errorMessage, 'show-comments-panel': showCommentsPanel, 'grabNDrag': enableGrabNDrag }">
+     [ngClass]="{ 'pdfContainer': true, 'annotations': enableAnnotations, hidden: errorMessage,
+      'show-comments-panel': showCommentsPanel, 'grabNDrag': enableGrabNDrag, 'icpPointer': enablePointer }">
   <div grabNDrag [dragX]="enableGrabNDrag"
        #pdfViewer
        class="pdfViewer"
@@ -26,6 +27,12 @@
        (mousedown)="onPdfViewerClick()"
        [ngClass]="{ hidden: loadingDocument, highlightMode: highlightMode | async, drawMode: drawMode | async }">
   </div>
+
+  <mv-pointer *ngIf="!!pointerClick"
+              [zoom]="zoom"
+              [rotate]="rotation"
+              [pointerClick]="pointerClick">
+  </mv-pointer>
 
   <mv-redactions *ngIf="(toolbarEvents.redactionMode | async);else annotationTemplate"
                  [zoom]="zoom"

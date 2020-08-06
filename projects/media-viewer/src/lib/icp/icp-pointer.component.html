@@ -1,0 +1,25 @@
+<div *ngIf="!isPresenter" class="pageContainer">
+  <div class="pageContainer__page"
+       [ngStyle]="{
+         'width.px': width,
+         'height.px': height
+       }"
+       [ngClass]="{
+         'rotation': true,
+         'rot90': rotate === 90,
+         'rot180': rotate === 180,
+         'rot270': rotate === 270
+       }">
+    <div class="pageContainer__page-item">
+      <ng-container>
+        <div class="pointer__here"
+             [style.width]="8 * zoom + 'px'"
+             [style.height]="12 * zoom + 'px'"
+             [style.top]="pointerPosition.y * zoom + 'px'"
+             [style.left]="pointerPosition.x * zoom + 'px'">
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+

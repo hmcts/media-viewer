@@ -4,7 +4,8 @@ import { IcpSession, IcpState } from '../../icp/icp.interfaces';
 export const initialIcpSessionState: IcpState = {
   session: null,
   presenter: null,
-  client: null
+  client: null,
+  pointer: false,
 };
 
 export function icpReducer (state = initialIcpSessionState,
@@ -45,6 +46,14 @@ export function icpReducer (state = initialIcpSessionState,
         ...initialIcpSessionState
       };
     }
+
+    case fromIcpActions.ICP_POINTER_TOGGLED: {
+      const toggle = action.payload;
+      return {
+        ...state,
+        pointer: toggle
+      };
+    }
   }
   return state;
 }
@@ -52,3 +61,4 @@ export function icpReducer (state = initialIcpSessionState,
 export const getIcpSession = (state: IcpState) => state.session;
 export const getPresenter = (state: IcpState) => state.presenter;
 export const getClient = (state: IcpState) => state.client;
+export const getPointer = (state: IcpState) => state.pointer;

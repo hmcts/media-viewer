@@ -5,7 +5,7 @@
 <div grabNDrag [dragY]="enableGrabNDrag"
      id="viewer-wrapper"
      [ngStyle]="{ height: height }"
-     [ngClass]="{ 'grabNDrag': enableGrabNDrag }"
+     [ngClass]="{ 'grabNDrag': enableGrabNDrag, 'icpPointer': enablePointer }"
      *ngIf="url && !errorMessage">
   <div class="split left">
     <div grabNDrag [dragX]="enableGrabNDrag"

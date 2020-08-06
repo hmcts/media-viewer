@@ -35,4 +35,13 @@
       </button>
     </div>
   </div>
+  <div id="toolbarViewerRight">
+    <div *ngIf="isPresenter" class="splitToolbarButton">
+      <button class="toolbarButton" tabindex="0" title="Toggle Pointer"
+              (click)="togglePointer()">
+        <span *ngIf="showPointer" data-l10n-id="icp-leave-presentation_label">Hide Pointer</span>
+        <span *ngIf="!showPointer" data-l10n-id="icp-leave-presentation_label">Show Pointer</span>
+      </button>
+    </div>
+  </div>
 </div>

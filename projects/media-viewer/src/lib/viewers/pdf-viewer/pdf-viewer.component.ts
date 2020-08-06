@@ -28,13 +28,13 @@ import * as fromStore from '../../store/reducers/reducers';
 import * as fromDocumentActions from '../../store/actions/document.action';
 import { PdfPositionUpdate } from '../../store/actions/document.action';
 import * as fromAnnotationActions from '../../store/actions/annotations.action';
-import * as fromRedactionActions from '../../store/actions/redaction.actions';
 import { filter, tap, throttleTime } from 'rxjs/operators';
 import * as fromTagActions from '../../store/actions/tags.actions';
 import { SetCaseId } from '../../store/actions/icp.action';
 import * as fromDocumentsSelector from '../../store/selectors/document.selectors';
 import { IcpService } from '../../icp/icp.service';
-import { IcpState } from '../../icp/icp.interfaces';
+import { IcpState, IcpPointerClick } from '../../icp/icp.interfaces';
+import * as fromIcpSelectors from '../../store/selectors/icp.selectors';
 
 @Component({
   selector: 'mv-pdf-viewer',
@@ -81,6 +81,8 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   private viewerException: ViewerException;
   showCommentsPanel: boolean;
   enableGrabNDrag = false;
+  enablePointer = false;
+  pointerClick: IcpPointerClick;
 
   constructor(
     private store: Store<fromStore.AnnotationSetState>,
@@ -123,6 +125,8 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
       .pipe(throttleTime(500, asyncScheduler, { leading: true, trailing: true }))
       .subscribe(event => this.store.dispatch(new PdfPositionUpdate(event.location)))
     );
+    this.$subscription.add(this.icpStore.pipe(select(fromIcpSelectors.showPointer)).subscribe(toggle => this.enablePointer = toggle));
+    this.$subscription.add(this.viewerEvents.pointerUpdate.subscribe(click => this.pointerClick = click));
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -151,7 +155,6 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
   ngOnDestroy(): void {
     this.$subscription.unsubscribe();
   }
-
 
   private async loadDocument() {
     await this.pdfWrapper.loadDocument(this.url);
@@ -220,6 +223,17 @@ export class PdfViewerComponent implements AfterContentInit, OnChanges, OnDestro
     if (!this.annotationSet) {
       this.toolbarEvents.highlightModeSubject.next(false);
       this.toolbarEvents.drawModeSubject.next(false);
+    }
+    if (this.enablePointer) {
+      const pointerClick = {
+        page,
+        position: {
+          x: mouseEvent.x,
+          y: mouseEvent.y
+        },
+        target: (<HTMLElement>mouseEvent.target).parentElement.getBoundingClientRect()
+      };
+      this.viewerEvents.pointerClicked(pointerClick);
     }
   }
 

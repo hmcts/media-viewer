@@ -16,6 +16,8 @@ import { CreateBookmark } from '../../store/actions/bookmarks.action';
 import * as fromBookmarks from '../../store/selectors/bookmarks.selectors';
 import {take} from 'rxjs/operators';
 import uuid from 'uuid';
+import * as fromIcpSelectors from '../../store/selectors/icp.selectors';
+import { IcpState } from '../../icp/icp.interfaces';
 
 
 @Component({

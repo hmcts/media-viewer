@@ -5,13 +5,16 @@ import { Subscription } from 'rxjs';
 import { IcpUpdateService } from './icp-update.service';
 import { ViewerEventService } from '../viewers/viewer-event.service';
 import { take } from 'rxjs/operators';
-import { IcpState, IcpSession } from './icp.interfaces';
+import { IcpState, IcpSession, IcpPointerPosition, IcpPointerClick } from './icp.interfaces';
 import * as fromDocSelectors from '../store/selectors/document.selectors';
+import { PdfPosition } from '../viewers/pdf-viewer/side-bar/bookmarks/bookmarks.interfaces';
 
 @Injectable()
 export class IcpFollowerService {
 
   session: IcpSession;
+  pointerClick: IcpPointerClick;
+  showPointer = false;
 
   $subscription: Subscription;
 
@@ -43,7 +46,13 @@ export class IcpFollowerService {
     }
   }
 
-  followScreenUpdate({ pdfPosition }) {
+  followScreenUpdate({ pdfPosition, showPointer, pointerClick }) {
+    this.updatePdfPosition(pdfPosition);
+    this.togglePointer(showPointer)
+    this.updatePointerClick(pointerClick);
+  }
+
+  updatePdfPosition(pdfPosition: PdfPosition) {
     if (pdfPosition) {
       this.viewerEvents.goToDestination([
         pdfPosition.pageNumber - 1,
@@ -59,5 +68,19 @@ export class IcpFollowerService {
           this.toolbarEvents.rotate(rotationDelta);
         }
       });
+  }
+
+  togglePointer(showPointer = false) {
+    this.showPointer = showPointer;
+  }
+
+  updatePointerClick(click: IcpPointerClick) {
+    this.pointerClick = click;
+
+    if (this.showPointer) {
+       this.viewerEvents.updatePointer(this.pointerClick);
+    } else {
+      this.viewerEvents.updatePointer(undefined);
+    }
   }
 }

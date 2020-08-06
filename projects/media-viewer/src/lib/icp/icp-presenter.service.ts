@@ -5,8 +5,16 @@ import * as fromDocSelectors from '../store/selectors/document.selectors';
 import { Subscription } from 'rxjs';
 import { PdfPosition } from '../viewers/pdf-viewer/side-bar/bookmarks/bookmarks.interfaces';
 import { IcpUpdateService } from './icp-update.service';
-import { IcpState, IcpScreenUpdate, IcpSession, IcpParticipant } from './icp.interfaces';
+import {
+  IcpState,
+  IcpScreenUpdate,
+  IcpSession,
+  IcpParticipant,
+  IcpPointerClick
+} from './icp.interfaces';
 import * as fromIcpSelectors from '../store/selectors/icp.selectors';
+import * as fromIcpActions from '../store/actions/icp.action';
+import { ViewerEventService } from '../viewers/viewer-event.service';
 
 @Injectable()
 export class IcpPresenterService {
@@ -14,10 +22,13 @@ export class IcpPresenterService {
   session: IcpSession;
   presenter: IcpParticipant;
   pdfPosition: PdfPosition;
+  showPointer: boolean;
+  pointerClick: IcpPointerClick;
 
   $subscription: Subscription;
 
   constructor(private readonly toolbarEvents: ToolbarEventService,
+              private readonly viewerEventService: ViewerEventService,
               private readonly socketService: IcpUpdateService,
               private store: Store<IcpState>) {}
 
@@ -42,6 +53,17 @@ export class IcpPresenterService {
       this.$subscription.add(this.socketService.newParticipantJoined().subscribe(() => {
         this.onNewParticipantJoined();
       }));
+      this.$subscription.add(this.toolbarEvents.icp.togglePointerSubject.subscribe((toggle) => {
+        this.store.dispatch(new fromIcpActions.IcpPointerToggled(toggle));
+      }));
+      this.$subscription.add(this.store.pipe(select(fromIcpSelectors.showPointer)).subscribe(showPointer => {
+        this.showPointer = showPointer;
+        this.onTogglePointer(showPointer)
+      }));
+      this.$subscription.add(this.viewerEventService.pointerClick.subscribe((click) => {
+        this.pointerClick = click;
+        this.onPointerClick(click);
+      }));
     }
   }
 
@@ -53,7 +75,32 @@ export class IcpPresenterService {
   }
 
   onPositionUpdate(pdfPosition: PdfPosition) {
-    const screen: IcpScreenUpdate = { pdfPosition, document: undefined };
+    const screen: IcpScreenUpdate = {
+      pdfPosition,
+      document: undefined,
+      showPointer: this.showPointer,
+      pointerClick: this.pointerClick
+    };
+    this.socketService.updateScreen(screen);
+  }
+
+  onTogglePointer(showPointer: boolean) {
+    const screen: IcpScreenUpdate = {
+      pdfPosition: this.pdfPosition,
+      document: undefined,
+      showPointer,
+      pointerClick: this.pointerClick
+    };
+    this.socketService.updateScreen(screen);
+  }
+
+  onPointerClick(pointerClick: IcpPointerClick) {
+    const screen: IcpScreenUpdate = {
+      pdfPosition: this.pdfPosition,
+      document: undefined,
+      showPointer: this.showPointer,
+      pointerClick
+    };
     this.socketService.updateScreen(screen);
   }
 

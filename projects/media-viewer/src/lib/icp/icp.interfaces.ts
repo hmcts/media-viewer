@@ -4,6 +4,7 @@ export interface IcpState {
   session: IcpSession;
   presenter: IcpParticipant;
   client: IcpParticipant;
+  pointer: boolean;
 }
 
 export interface IcpSession {
@@ -20,4 +21,17 @@ export interface IcpParticipant {
 export interface IcpScreenUpdate {
   pdfPosition: PdfPosition;
   document: string;
+  showPointer: boolean;
+  pointerClick: IcpPointerClick;
+}
+
+export interface IcpPointerPosition {
+  x: number;
+  y: number;
+}
+
+export interface IcpPointerClick {
+  page: number;
+  position: IcpPointerPosition;
+  target: any;
 }

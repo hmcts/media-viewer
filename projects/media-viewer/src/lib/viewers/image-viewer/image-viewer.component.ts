@@ -18,10 +18,12 @@ import { ResponseType, ViewerException } from '../viewer-exception.model';
 import { ViewerUtilService } from '../viewer-util.service';
 import { ToolbarButtonVisibilityService } from '../../toolbar/toolbar-button-visibility.service';
 import { AnnotationApiService } from '../../annotations/annotation-api.service';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import * as fromStore from '../../store/reducers/reducers';
 import * as fromDocument from '../../store/actions/document.action';
 import * as fromRedactionActions from '../../store/actions/redaction.actions';
+import * as fromIcpSelectors from '../../store/selectors/icp.selectors';
+import { IcpState } from '../../icp/icp.interfaces';
 
 @Component({
     selector: 'mv-image-viewer',
@@ -52,9 +54,10 @@ export class ImageViewerComponent implements OnInit, OnDestroy, OnChanges {
 
   showCommentsPanel: boolean;
   enableGrabNDrag = false;
+  enablePointer = false;
 
   constructor(
-    private store: Store<fromStore.AnnotationSetState>,
+    private store: Store<fromStore.AnnotationSetState | IcpState>,
     private readonly annotationsApi: AnnotationApiService,
     private readonly printService: PrintService,
     private readonly viewerUtilService: ViewerUtilService,
@@ -70,7 +73,10 @@ export class ImageViewerComponent implements OnInit, OnDestroy, OnChanges {
       this.toolbarEvents.printSubject.subscribe(() => this.printService.printDocumentNatively(this.url)),
       this.toolbarEvents.downloadSubject.subscribe(() => this.download()),
       this.toolbarEvents.grabNDrag.subscribe(grabNDrag => this.enableGrabNDrag = grabNDrag),
-      this.toolbarEvents.commentsPanelVisible.subscribe(toggle => this.showCommentsPanel = toggle)
+      this.toolbarEvents.commentsPanelVisible.subscribe(toggle => this.showCommentsPanel = toggle),
+      this.store.pipe(select(fromIcpSelectors.showPointer)).subscribe(toggle => {
+        this.enablePointer = toggle;
+      })
     );
   }
 

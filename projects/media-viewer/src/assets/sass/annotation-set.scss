@@ -1,4 +1,4 @@
-mv-annotation-set, mv-redactions, mv-bookmark-icons {
+mv-annotation-set, mv-redactions, mv-bookmark-icons, mv-pointer {
   .rotation {
     -webkit-transform-origin: left bottom;
     -moz-transform-origin: left bottom;
@@ -67,7 +67,7 @@ mv-annotation-set, mv-redactions, mv-bookmark-icons {
   }
 }
 
-mv-bookmark-icons {
+mv-bookmark-icons, mv-pointer {
   .drawMode, .rot90, .rot180, .rot270 {
     z-index: 3;
   }
