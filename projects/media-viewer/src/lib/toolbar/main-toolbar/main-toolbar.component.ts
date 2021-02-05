@@ -1,4 +1,3 @@
-import { ConnectionPositionPair } from '@angular/cdk/overlay';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -14,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { ToolbarEventService } from '../toolbar-event.service';
 import { ToolbarButtonVisibilityService } from '../toolbar-button-visibility.service';
 import { NumberHelperService } from '../../../lib/shared/util/services/number.helper.service';
+import { ConnectionPositionPair } from "@angular/cdk/overlay";
 
 @Component({
   selector: 'mv-main-toolbar',
